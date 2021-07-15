@@ -117,5 +117,49 @@ function M.get_frame_longest_row(layout, frame_type)
    return output
 end
 
+-- Takes parent column type frame that contains the desired window.
+-- Return row of windows that contains the desired window from this frame.
+---@param frame table table of the form like `vim.fn.winlayout()` function returns
+---@param winid number see `:help winid`
+function M.get_frame_row_that_contains_desired_win(frame, winid)
+   frame = frame[2]
+
+   local output = {}
+
+   for i, row in ipairs(frame) do
+      output[i] = {}
+      for _, leaf in ipairs(row[2]) do
+         table.insert(output[i], leaf[2])
+      end
+   end
+
+   -- for i=1, #output do
+   --    if M.array_contains(output[i], winid) then
+   --       output = output[i]
+   --       break
+   --    end
+   -- end
+
+   for _, row in ipairs(output) do
+      if M.array_contains(row, winid) then
+         output = row
+         break
+      end
+   end
+
+   return output
+end
+
+
+-- Check if an array-like table contains the desired value.
+function M.array_contains(array, value)
+   for i=1, #array do
+      if array[i] == value then
+         return true
+      end
+   end
+   return false
+end
+
 
 return M
